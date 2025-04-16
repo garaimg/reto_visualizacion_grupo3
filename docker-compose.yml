@@ -223,8 +223,7 @@ services:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      kibana:
-        condition: service_healthy
+      - kibana
     volumes:
       - certs:/app/certs:ro
     working_dir: /app

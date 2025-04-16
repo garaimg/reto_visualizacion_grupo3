@@ -22,13 +22,11 @@ CA_CERT_PATH = os.environ.get("CA_CERT_PATH", "/certs/ca/ca.crt")
 # Construir el host de conexión: usamos el nombre del servicio de Elasticsearch definido en docker-compose
 ES_HOST = f"https://es01:{ES_PORT}"
 
-# Conexión a Elasticsearch
+# Conexión a Elasticsearch (sin scheme ni port por separado)
 try:
     es = Elasticsearch(
         [ES_HOST],
         http_auth=(ELASTIC_USER, ELASTIC_PASSWORD),
-        scheme="https",
-        port=int(ES_PORT),
         verify_certs=True,
         ca_certs=CA_CERT_PATH
     )
@@ -95,7 +93,7 @@ try:
 except Exception as e:
     logger.error("Error al insertar documentos", exc_info=True)
 
-# Verificar la inserción (opcional)
+# Verificar la inserción
 time.sleep(1)
 try:
     res = es.count(index=INDEX_NAME)
