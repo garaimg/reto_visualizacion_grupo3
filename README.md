@@ -34,14 +34,7 @@ Se ha utilizado Elasticsearch como motor de búsqueda y análisis de datos, junt
 - Se ha creado un dashboard personalizado en Kibana para visualizar los datos insertados.
 
 
-- El dashboard contiene visualizaciones como:
-
-  - Número total de películas.
-
-  - Promedio de votos.
-
-  - Calificaciones máximas.
-
+- El dashboard contiene visualizaciones como el número total de películas, calificaciones máximas de las películas, mapa con el origen de las películas, etc.
 
 - El dashboard se ha exportado en formato .ndjson, lo que permite importarlo fácilmente desde la interfaz de Kibana:
 
@@ -67,6 +60,9 @@ docker compose up --build
 
 - Un contenedor de Kibana configurado para conectarse al clúster.
 
+
+- Un contenedor de Python para ejecutar el script de inserción de datos.
+
 ---
 
 ## Instrucciones de Uso
@@ -81,7 +77,6 @@ docker compose up --build
 git clone https://github.com/garaimg/reto_visualizacion_grupo3.git
 cd reto_visualizacion_grupo3
 docker compose up --build
-python insertar_datos.py
 ```
 
 - El script de inserción ejecutará automáticamente la carga de datos.
@@ -162,9 +157,9 @@ python insertar_datos.py
 
 ## Extras y Mejoras Implementadas
 
-- ✅ Clúster de Elasticsearch con autenticación.
+- ✅ Clúster de Elasticsearch de 3 nodos con autenticación.
 - ✅ Script automático para insertar datos de películas.
-- ✅ Dashboard personalizado en Kibana.
+- ✅ Uso de un mapa en el dashboard personalizado de Kibana.
 - ✅ Exportación e importación del dashboard en formato .ndjson.
 - ✅ Orquestación completa con Docker Compose.
 - ✅ Script de parada automática del clúster.
