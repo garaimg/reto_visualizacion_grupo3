@@ -37,7 +37,7 @@ except Exception:
 # Mapping del índice
 mapping = {
     "properties": {
-        "titulo": {"type": "text"},
+        "titulo": {"type": "keyword"},
         "director": {"type": "keyword"},
         "genero": {"type": "keyword"},
         "anio": {"type": "integer"},
