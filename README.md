@@ -12,7 +12,8 @@ Se ha utilizado Elasticsearch como motor de búsqueda y análisis de datos, junt
 
 ### 1. **Montaje del cluster de Elasticsearch**
 
-- Se ha desplegado un clúster de 3 nodos de Elasticsearch con autenticación habilitada.
+- Se ha desplegado un clúster de 3 nodos de Elasticsearch con autenticación habilitada gracias al servicio setup en el
+  docker compose.
 
 - Se ha configurado Kibana para conectarse al clúster de forma segura.
 
@@ -32,7 +33,6 @@ Se ha utilizado Elasticsearch como motor de búsqueda y análisis de datos, junt
 ### 3. **Creación del dashboard en Kibana**
 
 - Se ha creado un dashboard personalizado en Kibana para visualizar los datos insertados.
-
 
 - El dashboard contiene visualizaciones como el número total de películas, calificaciones máximas de las películas, mapa con el origen de las películas, etc.
 
@@ -54,14 +54,15 @@ El sistema está preparado para ejecutarse con un único comando:
 ```bash
 docker compose up --build
 ```
+- El comando desplega:
 
-- Tres contenedores de Elasticsearch (nodos del clúster).
+  - Tres contenedores de Elasticsearch (nodos del clúster).
 
+  - Un contenedor llamado "setup" que se encarga de la seguridad y de gestionar los certificados.
 
-- Un contenedor de Kibana configurado para conectarse al clúster.
+  - Un contenedor de Kibana configurado para conectarse al clúster.
 
-
-- Un contenedor de Python para ejecutar el script de inserción de datos.
+  - Un contenedor de Python para ejecutar el script de inserción de datos.
 
 ---
 
