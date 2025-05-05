@@ -20,6 +20,7 @@ ES_PORT = os.environ.get("ES_PORT", "9200")
 CA_CERT_PATH = os.environ.get("CA_CERT_PATH", "/certs/ca/ca.crt")
 ES_HOST = f"https://es01:{ES_PORT}"
 INDEX_NAME = "peliculas"
+TITLES_FILE = os.environ.get("TITLES_FILE", "/app/titles.txt")
 
 # Conexión a Elasticsearch
 try:
@@ -74,16 +75,34 @@ ciudades = [
     {"name": "Palma", "lat": 39.5696, "lon": 2.6502},
     {"name": "Vitoria", "lat": 42.8467, "lon": -2.6728}
 ]
+
 generos = ["Acción", "Romance", "Suspenso", "Comedia", "Ciencia Ficción", "Drama", "Fantasía", "Terror"]
 directores = ["Juan Pérez", "María López", "Carlos Sánchez", "Ana Martínez", "Luis García",
               "Laura Rodríguez", "Jorge Ramírez", "Elena Torres", "Andrés Gómez", "Sofía Castro"]
 
+# Cargar títulos reales de archivo local
+if os.path.exists(TITLES_FILE):
+    with open(TITLES_FILE, encoding='utf-8') as f:
+        titulos_reales = [line.strip() for line in f if line.strip()]
+    logger.info(f"Cargados {len(titulos_reales)} títulos desde {TITLES_FILE}.")
+else:
+    logger.error(f"No se encontró el archivo de títulos en {TITLES_FILE}.")
+    titulos_reales = []
 
-# Función para generar un documento
-def generar_pelicula(i):
+# Validar que haya títulos
+if not titulos_reales:
+    raise RuntimeError(f"Se requiere al menos 1 título real en {TITLES_FILE}.")
+
+# Usar todos los títulos disponibles
+titulos = titulos_reales.copy()
+random.shuffle(titulos)
+logger.info(f"Se van a insertar {len(titulos)} documentos.")
+
+# Función para generar un documento a partir de un título real
+def generar_pelicula(titulo):
     ciudad = random.choice(ciudades)
     return {
-        "titulo": f"Pelicula {i}",
+        "titulo": titulo,
         "director": random.choice(directores),
         "genero": random.choice(generos),
         "anio": random.randint(1990, 2022),
@@ -94,24 +113,20 @@ def generar_pelicula(i):
         "ciudad": ciudad["name"]
     }
 
-
-# Preparar bulk de 200 documentos
-acciones = [
-    {"_index": INDEX_NAME, "_source": generar_pelicula(i)}
-    for i in range(1, 201)
-]
+# Construir bulk con todos los títulos
+actions = [{"_index": INDEX_NAME, "_source": generar_pelicula(t)} for t in titulos]
 
 # Insertar datos
 try:
-    helpers.bulk(es, acciones)
-    logger.info(f"{len(acciones)} documentos insertados en '{INDEX_NAME}'.")
+    helpers.bulk(es, actions)
+    logger.info(f"{len(actions)} documentos insertados en '{INDEX_NAME}'.")
 except Exception:
     logger.exception("Error al insertar documentos")
     raise
 
 # Verificar conteo final
+time.sleep(1)
 try:
-    time.sleep(1)
     count = es.count(index=INDEX_NAME)["count"]
     logger.info(f"Total de documentos en índice '{INDEX_NAME}': {count}")
 except Exception:

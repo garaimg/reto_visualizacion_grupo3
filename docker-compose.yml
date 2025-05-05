@@ -226,6 +226,7 @@ services:
       - kibana
     volumes:
       - certs:/app/certs:ro
+      - ./titles.txt:/app/titles.txt:ro
     working_dir: /app
     environment:
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
